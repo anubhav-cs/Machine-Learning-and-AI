@@ -2,7 +2,7 @@
 #                                                                              #
 # Statistical Machine Learning & AI                                            #
 #                                                                              #
-# Problem:		Multi-arm bandits                                              #
+# Problem:      Multi-arm bandits                                              #
 #                                                                              #
 # Author:       Anubhav Singh                                                  #
 #                                                                              #

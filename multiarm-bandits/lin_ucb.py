@@ -2,7 +2,7 @@
 #                                                                              #
 # Statistical Machine Learning & AI                                            #
 #                                                                              #
-# Problem:		Contextual bandits                                             #
+# Problem:      Contextual bandits                                             #
 #                                                                              #
 # Author:       Anubhav Singh                                                  #
 #                                                                              #
