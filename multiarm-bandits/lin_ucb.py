@@ -2,9 +2,9 @@
 #                                                                              #
 # Statistical Machine Learning & AI                                            #
 #                                                                              #
-# Problem:      Contextual bandits                                             #
+# Problem:  Contextual bandits                                                 #
 #                                                                              #
-# Author:       Anubhav Singh                                                  #
+# Author:   Anubhav Singh                                                      #
 #                                                                              #
 # References:                                                                  #
 #   1. Linear UCB: https://arxiv.org/pdf/1003.0146.pdf                         #
