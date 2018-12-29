@@ -1,5 +1,7 @@
 # Python implementation and analysis of multi-arm bandits(MAB) and contextual bandits algorithms.#
 
+![Relative performance]()
+
 The following algorithms were implemented:
 
 1. Epsilon Greedy
@@ -20,7 +22,9 @@ the article and its match with the visiting user), first the features for arm 1,
 arm 10.
 
 
-References: Included in relevant python code files, but overall refers to the following papers.
+# References: #
+
+Included in relevant python code files, but overall refers to the following papers.
 
 
 * Lihong Li, Wei Chu, John Langford, Robert E. Schapire, ‘A Contextual-Bandit Approach to Personalized News Article Recommendation’, in Proceedings of the Nineteenth International Conference on World Wide Web (WWW 2010), Raleigh, NC, USA, 2010. <https://arxiv.org/pdf/1003.0146.pdf>

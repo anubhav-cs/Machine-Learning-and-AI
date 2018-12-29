@@ -154,6 +154,7 @@ if __name__ == '__main__':
     print('KernelUCB average reward', np.mean(results_KernelUCB))
 
     # Plot the average-reward graph over time
+
     plot_EpsGreedy  = []
     plot_UCB        = []
     plot_LinUCB     = []
@@ -172,3 +173,4 @@ if __name__ == '__main__':
     plt.xlabel("$T$")
     plt.ylabel("$T^{-1}\sum_{1}^{T} r_{T,a}$")
     plt.legend()
+    plt.savefig('images/foo.png')
