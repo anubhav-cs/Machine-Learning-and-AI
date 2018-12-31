@@ -11,14 +11,6 @@
 #                                                                              #
 ################################################################################
 
-##### Required updates to the program #####
-# 1. Create graph in python
-# 2. Code Shortest Path Algorithm
-# 3. Code betweenness calculation algorithm
-# 4. Code approximation of enemy agents using particle filter
-# 5. Develop bellman ford algorithm
-# 6. Value Iteration
-
 import itertools
 from captureAgents import CaptureAgent
 import random, time, util
@@ -31,6 +23,7 @@ from decimal import Decimal
 import operator
 import copy
 import distanceCalculator
+
 #################
 # Team creation #
 #################
@@ -52,10 +45,10 @@ def createTeam(firstIndex, secondIndex, isRed,
   behavior is what you want for the nightly contest.
   """
 
-  # Records shared betweent the two ally agents
-  S = [[],[],[],[]]
-  enemy_trap_coords = {}
-  trap_coords = {}
+  # Records shared between the two ally agents
+  S = [[],[],[],[]]      # Store approximate enemy agent location
+  enemy_trap_coords = {} #Store dangerous nodes with only one way out for enemy
+  trap_coords = {}       #Store dangerous nodes with only one way out for self
   # The following line is an example only; feel free to change it.
   return [eval(first)(firstIndex,S,enemy_trap_coords,trap_coords), \
                   eval(second)(secondIndex,S,enemy_trap_coords,trap_coords)]
@@ -65,17 +58,15 @@ def createTeam(firstIndex, secondIndex, isRed,
 ##########
 
 ######################
-# Parent Agent Class #
+# Agent Class #
 ######################
 class Kunti(CaptureAgent):
   """
-  A Dummy agent to serve as an example of the necessary agent structure.
-  You should look at baselineTeam.py for more details about how to
-  create an agent as this is the bare minimum.
+  This class represents both offensive and defensive agents and their
+  corresponding states.
+  The agent objects are created by the function createTeam.
   """
-##################################################################
-##################################################################
-##################################################################
+
   prev_10_actions = []
   counter = 0
   randomise = False
@@ -87,9 +78,6 @@ class Kunti(CaptureAgent):
     V_i = {}
     V_f = {}
     n_s = {}
-
-    ## #print walls
-
     # condition_not_met = True
     for i in range(70):
       for state in S:
@@ -123,22 +111,24 @@ class Kunti(CaptureAgent):
     ## #print my_pos,"ACtion",n_s[my_pos]
     return n_s.setdefault(my_pos, my_pos)
 
-########################################################
-# init function re-defined to include the record S to be shared between agents
-# this is used in particle filter to find approximate positions of enemy agents
-# using the approximate manhattan distance of enemy agent
 
-  def __init__( self, index, S,enemy_trap_coords, trap_coords, timeForComputing = .1 ):
+  def __init__( self, index, S,enemy_trap_coords, trap_coords, \
+               timeForComputing = .1 ):
     """
     Lists several variables you can query:
     self.index = index for this agent
+    self.S = list to store and share approximate agent coordinates
+    self.enemy_trap_coords = dict objects to store the nodes with single path
+        back to the safe zone for the enemy agents.
+    self.trap_coords = dict objects to store the nodes with single path
+        back to the safe zone for the team's agents.
     self.red = true if you're on the red team, false otherwise
     self.agentsOnTeam = a list of agent objects that make up your team
     self.distancer = distance calculator (contest code provides this)
     self.observationHistory = list of GameState objects that correspond
         to the sequential order of states that have occurred so far this game
-    self.timeForComputing = an amount of time to give each turn for computing maze distances
-        (part of the provided distance calculator)
+    self.timeForComputing = an amount of time to give each turn for computing
+        maze distances(part of the provided distance calculator)
     """
     self.S = S
     self.enemy_trap_coords = enemy_trap_coords
@@ -164,7 +154,6 @@ class Kunti(CaptureAgent):
 
     # Access to the graphics
     self.display = None
-
 
 #######################################
 # Particle Filter Approximate locator #
