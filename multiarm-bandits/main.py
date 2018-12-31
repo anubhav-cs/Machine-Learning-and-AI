@@ -7,7 +7,7 @@
 # Author:   Anubhav Singh                                                      #
 #                                                                              #
 # References:                                                                  #
-#   1. offlineEvaluate:                                                        #
+#   1. offline_evaluate:                                                        #
 #      a.) https://arxiv.org/pdf/1003.0146.pdf                                 #
 #      Contextual-Bandit Approach to Personalized News Article Recommendation  #
 #      b.) https://arxiv.org/pdf/1003.5956.pdf                                 #
@@ -25,7 +25,7 @@ from kernel_ucb import KernelUCB
 from sklearn.metrics.pairwise import rbf_kernel
 
 
-def offlineEvaluate(mab, arms, rewards, contexts, nrounds=None):
+def offline_evaluate(mab, arms, rewards, contexts, nrounds=None):
     """
     Offline evaluation of a multi-armed bandit
     Implementation of Algorithm 3 in the paper:-
@@ -71,7 +71,7 @@ def offlineEvaluate(mab, arms, rewards, contexts, nrounds=None):
             break
     return reward_out
 
-def loadDataset(file):
+def load_dataset(file):
     """
     Function to load the data-set into the main memory from text file.
 
@@ -98,7 +98,7 @@ def loadDataset(file):
     contexts = [[ (float)(val) for val in row[2:]] for row in rows]
     return arms, rewards, contexts
 
-def alphaGridSearch():
+def alpha_grid_search():
     """
     Function to perform grid-search to find optimal alpha value for Linear UCB
 
@@ -109,17 +109,19 @@ def alphaGridSearch():
     alpha_grid = []
     alpha_grid.append(0)
 
+    # create the grid
     for i in range(count_loop):
         alpha_grid.append(alpha_grid[i]+step_size)
 
+    # find alpha value which maximizes LinUCB performance
     results = []
     for alpha in alpha_grid:
         mab = LinUCB(10, 10, alpha)
-        results_Test = offlineEvaluate(mab, arms, rewards, contexts, 800)
+        results_Test = offline_evaluate(mab, arms, rewards, contexts, 800)
         results.append(np.mean(results_Test))
-
     max_val = max(results)
 
+    # print the best value and also the plot corresponding to different values of alpha
     print("Best value of alpha = ",alpha_grid[results.index(max_val)])
     plt.plot(alpha_grid, results, label= "LinUCB")
     plt.xlabel("$\\alpha$")
@@ -133,28 +135,27 @@ if __name__ == '__main__':
 
     """
     #Load the dataset
-    arms, rewards, contexts = loadDataset("dataset.txt")
+    arms, rewards, contexts = load_dataset("dataset.txt")
 
     # Evaluate algorithm's effectiveness in terms of average rewards at the end
     mab = EpsGreedy(10, 0.05)
-    results_EpsGreedy = offlineEvaluate(mab, arms, rewards, contexts)
+    results_EpsGreedy = offline_evaluate(mab, arms, rewards, contexts)
     print('EpsGreedy average reward', np.mean(results_EpsGreedy))
 
     mab = UCB(10, 1.0, 0.1)
-    results_UCB = offlineEvaluate(mab, arms, rewards, contexts, None)
+    results_UCB = offline_evaluate(mab, arms, rewards, contexts, None)
     print('UCB average reward', np.mean(results_UCB))
 
     mab = LinUCB(10, 10, 1.0)
-    results_LinUCB = offlineEvaluate(mab, arms, rewards, contexts, 800)
+    results_LinUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
     print('LinUCB average reward', np.mean(results_LinUCB))
 
     "NOTE: Kernel UCB is resource intensive and may take much longer to finish"
     mab = KernelUCB(10, 10, 0.5, 0.12, rbf_kernel)
-    results_KernelUCB = offlineEvaluate(mab, arms, rewards, contexts, 800)
+    results_KernelUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
     print('KernelUCB average reward', np.mean(results_KernelUCB))
 
     # Plot the average-reward graph over time
-
     plot_EpsGreedy  = []
     plot_UCB        = []
     plot_LinUCB     = []
@@ -165,6 +166,7 @@ if __name__ == '__main__':
         plot_UCB.append(np.mean(results_UCB[:T+1]))
         plot_LinUCB.append(np.mean(results_LinUCB[:T+1]))
         plot_KernelUCB.append(np.mean(results_KernelUCB[:T+1]))
+
     plt.plot(range(1, 801), plot_EpsGreedy, label= "EpsGreedy")
     plt.plot(range(1, 801), plot_UCB, label ="UCB")
     plt.plot(range(1, 801), plot_LinUCB, label = "LinUCB")

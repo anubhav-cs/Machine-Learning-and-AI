@@ -54,22 +54,23 @@ class LinUCB(MAB):
 
         """
 
-        # Enables multiple play calls for same round number (in case needed)
-        # - by resetting the counters updated by previous play call.
+        # Reset if the play call is for same round number as previous one
         if tround in self.arm_at_t.keys():
             tround_repeat = True
             self.num_times_arm[self.arm_at_t[tround]]-=1
         else:
             tround_repeat = False
 
-        p ={}
-        t = []
+        p ={} #captures expected reward for each arm
+
         for i in range(self.narms):
             self.theta[i+1] = np.matmul(np.linalg.inv(self.A[i+1]),self.B[i+1])
             x = np.transpose(np.matrix(context[10*i:10*i+10]))
             p[i+1] = np.matmul(np.transpose(self.theta[i+1]), x)+\
-            self.alpha * np.sqrt(np.matmul(np.matmul(np.transpose(x),np.linalg.inv(self.A[i+1])),x))
-            t.append(p[i+1])
+                        self.alpha * np.sqrt(np.matmul(np.matmul(
+                            np.transpose(x),np.linalg.inv(self.A[i+1])),x))
+
+        # find arm with maximum value of expected reward 'p'
         max_val = max(p[k] for k in p.keys())
         list_max = []
         for k in p.keys():
@@ -78,7 +79,9 @@ class LinUCB(MAB):
 
         self.arm_at_t[tround] = np.random.choice(list_max)
 
-        self.num_times_arm[self.arm_at_t[tround]] = self.num_times_arm.setdefault(self.arm_at_t[tround],0)+1
+        # Store the selected arm
+        self.num_times_arm[self.arm_at_t[tround]] = \
+                self.num_times_arm.setdefault(self.arm_at_t[tround],0)+1
 
         return self.arm_at_t[tround]
 
@@ -87,6 +90,7 @@ class LinUCB(MAB):
         Updates the internal state of the MAB after a play
 
         """
+        # x represents the context vector as column matrix
         x = np.transpose(np.matrix(context[10*(arm-1):10*(arm-1)+10]))
         self.A[arm] = self.A[arm] + np.matmul(x, np.transpose(x))
         self.B[arm] = self.B[arm] + reward*x
