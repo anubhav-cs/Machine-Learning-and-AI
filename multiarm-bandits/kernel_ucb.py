@@ -18,6 +18,20 @@ from mab import MAB
 import numpy as np
 from numpy.linalg import inv
 
+def argmax_rand(a):
+    """
+    Arguments
+    =========
+    a : numpy float array, 1-D of length 'narms'
+
+    Returns:
+    ========
+    index : int
+        Randomly pick an index from the set of
+        indices corresponding to a's max value.
+    """
+    return np.random.choice(np.flatnonzero(a == a.max()))
+
 class KernelUCB(MAB):
     """
     Kernelised contextual multi-armed bandit (Kernelised LinUCB)
@@ -59,11 +73,20 @@ class KernelUCB(MAB):
 
     def play(self, tround, context):
         """
-        Returns a selected arm
-        =======
-        self.arm_at_t[tround] : int
-            the positive integer arm id for this round
+        Play a round
 
+        Arguments
+        =========
+        tround : int
+            positive integer identifying the round
+
+        context : 1D float array, shape (self.ndims * self.narms),
+        optional context given to the arms
+
+        Returns
+        =======
+        arm : int
+            the positive integer arm id for this round
         """
 
         # Enables multiple play calls for same round number (in case needed)
@@ -75,6 +98,7 @@ class KernelUCB(MAB):
             tround_repeat = False
 
         if tround == 1:
+            # by default play arm 1
             self.u[0][0] = 1
         else:
             for i in range(self.narms):
@@ -99,7 +123,7 @@ class KernelUCB(MAB):
             if self.u[i] == max_u:
                 list_max.append(i+1)
 
-        self.arm_at_t[tround] = np.random.choice(list_max)
+        self.arm_at_t[tround] = argmax_rand(self.u)+1
         arm = self.arm_at_t[tround]
         self.full_context_at_t[tround] = context
         self.context_at_t[tround] = np.matrix(context[10*(arm-1):10*(arm-1)+10])
@@ -113,6 +137,16 @@ class KernelUCB(MAB):
         """
         Updates the internal state of the MAB after a play
 
+        Arguments
+        =========
+        arm : int
+            a positive integer arm id in {1, ..., self.narms}
+
+        reward : float
+            reward received from arm
+
+        context : 1D float array, shape (self.ndims * self.narms), optional
+            context given to arms
         """
         a = np.matrix(context[10*(arm-1):10*(arm-1)+10])
         self.reward_at_t.append(reward)
@@ -129,10 +163,8 @@ class KernelUCB(MAB):
 
             K_22 = inv(self.kern(a,a, self.k_gamma)[0][0] + self.gamma - \
                                      np.matmul(np.matmul(np.transpose(b),self.K_inv),b))
-
             K_11 = self.K_inv + np.linalg.det(K_22) * np.matmul(np.matmul(self.K_inv, b),\
                                      np.matmul(np.transpose(b),self.K_inv))
-
             K_12 = -np.linalg.det(K_22)*np.matmul(self.K_inv,b)
 
             K_21 = -np.linalg.det(K_22)*np.matmul(np.transpose(b),self.K_inv)

@@ -12,16 +12,18 @@ from mab import MAB
 import numpy as np
 
 def argmax_rand(a):
-    return np.random.choice(np.flatnonzero(a == a.max()))
+    """
+    Arguments
+    =========
+    a : numpy float array, 1-D of length 'narms'
 
-def check_context(context, narms):
-    if context is not None:
-            assert isinstance(context, np.ndarray),\
-            "'context' must be a numpy.ndarray or None"
-            assert np.issubdtype(context.dtype, np.floating),\
-            "'context' must be of type float"
-            assert context.size % narms == 0,\
-            "size of 'context' is inconsistent with 'narms'"
+    Returns:
+    ========
+    index : int
+        Randomly pick an index from the set of
+        indices corresponding to a's max value.
+    """
+    return np.random.choice(np.flatnonzero(a == a.max()))
 
 class UCB(MAB):
     """
@@ -55,11 +57,20 @@ class UCB(MAB):
 
     def play(self, tround, context=None):
         """
-        Returns a selected arm
-        =======
-        self.arm_at_t[tround] : int
-            the positive integer arm id for this round
+        Play a round
 
+        Arguments
+        =========
+        tround : int
+            positive integer identifying the round
+
+        context : 1D float array, shape (self.ndims * self.narms),
+        optional context given to the arms
+
+        Returns
+        =======
+        arm : int
+            the positive integer arm id for this round
         """
 
         # Rejects multiple play calls for same round number
@@ -83,6 +94,16 @@ class UCB(MAB):
         """
         Updates the internal state of the MAB after a play
 
+        Arguments
+        =========
+        arm : int
+            a positive integer arm id in {1, ..., self.narms}
+
+        reward : float
+            reward received from arm
+
+        context : 1D float array, shape (self.ndims * self.narms), optional
+            context given to arms
         """
 
         arm-=1
