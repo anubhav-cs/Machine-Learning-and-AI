@@ -138,55 +138,41 @@ if __name__ == '__main__':
     arms, rewards, contexts = load_dataset("dataset.txt")
 
     # Evaluate algorithm's effectiveness in terms of average rewards at the end
-    # mab = EpsGreedy(10, 0.05)
-    # results_EpsGreedy = offline_evaluate(mab, arms, rewards, contexts)
-    # print('EpsGreedy average reward', np.mean(results_EpsGreedy))
-    #
-    # mab = UCB(10, 1.0, 0.1)
-    # results_UCB = offline_evaluate(mab, arms, rewards, contexts, None)
-    # print('UCB average reward', np.mean(results_UCB))
+    mab = EpsGreedy(10, 0.05)
+    results_EpsGreedy = offline_evaluate(mab, arms, rewards, contexts)
+    print('EpsGreedy average reward', np.mean(results_EpsGreedy))
+
+    mab = UCB(10, 1.0, 0.1)
+    results_UCB = offline_evaluate(mab, arms, rewards, contexts, None)
+    print('UCB average reward', np.mean(results_UCB))
 
     mab = LinUCB(10, 10, 1.0)
     results_LinUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
     print('LinUCB average reward', np.mean(results_LinUCB))
 
     # "NOTE: Kernel UCB is resource intensive and may take much longer to finish"
-    # mab = KernelUCB(10, 10, 0.5, 0.12, rbf_kernel)
-    # results_KernelUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
-    # print('KernelUCB average reward', np.mean(results_KernelUCB))
-    #
+    mab = KernelUCB(10, 10, 0.5, 0.12, rbf_kernel)
+    results_KernelUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
+    print('KernelUCB average reward', np.mean(results_KernelUCB))
+    
     # # Plot the average-reward graph over time
-    # plot_EpsGreedy  = []
-    # plot_UCB        = []
-    # plot_LinUCB     = []
-    # plot_KernelUCB  = []
-    #
-    # for T in range(800):
-    #     plot_EpsGreedy.append(np.mean(results_EpsGreedy[:T+1]))
-    #     plot_UCB.append(np.mean(results_UCB[:T+1]))
-    #     plot_LinUCB.append(np.mean(results_LinUCB[:T+1]))
-    #     plot_KernelUCB.append(np.mean(results_KernelUCB[:T+1]))
-    #
-    # plt.plot(range(1, 801), plot_EpsGreedy, label= "EpsGreedy")
-    # plt.plot(range(1, 801), plot_UCB, label ="UCB")
-    # plt.plot(range(1, 801), plot_LinUCB, label = "LinUCB")
-    # plt.plot(range(1, 801), plot_KernelUCB, label= "KernelUCB")
-    #
-    # plt.xlabel("$T$")
-    # plt.ylabel("$T^{-1}\sum_{1}^{T} r_{T,a}$")
-    # plt.legend()
-    # plt.savefig('images/foo.png')
+    plot_EpsGreedy  = []
+    plot_UCB        = []
+    plot_LinUCB     = []
+    plot_KernelUCB  = []
 
-# from multiprocessing import Pool, cpu_count
-# from functools import partial
-# context = [1,2,3,4]
-#
-# def sq(x,y):
-#     return(y)
-#
-# with Pool(cpu_count()) as process_pool:
-#     p           = process_pool.map(partial(sq,
-#                                     y = context),
-#                                    range(10))
-#
-# print(p)
+    for T in range(800):
+        plot_EpsGreedy.append(np.mean(results_EpsGreedy[:T+1]))
+        plot_UCB.append(np.mean(results_UCB[:T+1]))
+        plot_LinUCB.append(np.mean(results_LinUCB[:T+1]))
+        plot_KernelUCB.append(np.mean(results_KernelUCB[:T+1]))
+
+    plt.plot(range(1, 801), plot_EpsGreedy, label= "EpsGreedy")
+    plt.plot(range(1, 801), plot_UCB, label ="UCB")
+    plt.plot(range(1, 801), plot_LinUCB, label = "LinUCB")
+    plt.plot(range(1, 801), plot_KernelUCB, label= "KernelUCB")
+
+    plt.xlabel("$T$")
+    plt.ylabel("$T^{-1}\sum_{1}^{T} r_{T,a}$")
+    plt.legend()
+    plt.savefig('images/foo.png')

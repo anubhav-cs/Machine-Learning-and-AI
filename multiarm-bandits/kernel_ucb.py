@@ -169,7 +169,6 @@ class KernelUCB(MAB):
 
             K_21 = -np.linalg.det(K_22)*np.matmul(np.transpose(b),self.K_inv)
 
-
             m = np.concatenate((np.array(K_11), np.array(K_12)),axis=1)
             n = np.concatenate((np.array(K_21), np.array(K_22)),axis=1)
 
