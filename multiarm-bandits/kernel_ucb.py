@@ -61,14 +61,11 @@ class KernelUCB(MAB):
         self.gamma = gamma
         self.eta = eta
         self.kern = kern
-        self.arm_at_t = {}
-        self.num_times_arm = {}
         self.context_at_t = {}
         self.reward_at_t = []
         self.last_round = 0
         self.u = np.transpose(np.zeros((1,narms)))
         self.y = []
-        self.full_context_at_t={}
         self.k_gamma = 0.01
 
     def play(self, tround, context):
@@ -88,14 +85,6 @@ class KernelUCB(MAB):
         arm : int
             the positive integer arm id for this round
         """
-
-        # Enables multiple play calls for same round number (in case needed)
-        # - by resetting the counters updated by previous play call.
-        if tround in self.arm_at_t.keys():
-            tround_repeat = True
-            self.num_times_arm[self.arm_at_t[tround]]-=1
-        else:
-            tround_repeat = False
 
         if tround == 1:
             # by default play arm 1
@@ -123,15 +112,11 @@ class KernelUCB(MAB):
             if self.u[i] == max_u:
                 list_max.append(i+1)
 
-        self.arm_at_t[tround] = argmax_rand(self.u)+1
-        arm = self.arm_at_t[tround]
-        self.full_context_at_t[tround] = context
+        arm = argmax_rand(self.u)+1
         self.context_at_t[tround] = np.matrix(context[10*(arm-1):10*(arm-1)+10])
-        self.num_times_arm[self.arm_at_t[tround]] = self.num_times_arm.setdefault\
-                                                    (self.arm_at_t[tround],0)+1
         self.last_round = tround
-#         print(np.transpose(self.u))
-        return self.arm_at_t[tround]
+
+        return arm
 
     def update(self, arm, reward, context):
         """

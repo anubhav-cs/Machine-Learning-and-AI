@@ -150,11 +150,12 @@ if __name__ == '__main__':
     results_LinUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
     print('LinUCB average reward', np.mean(results_LinUCB))
 
-    # "NOTE: Kernel UCB is resource intensive and may take much longer to finish"
+    # "NOTE: Kernel UCB is resource intensive
+    #  **It may take much-much longer to finish"
     mab = KernelUCB(10, 10, 0.5, 0.12, rbf_kernel)
     results_KernelUCB = offline_evaluate(mab, arms, rewards, contexts, 800)
     print('KernelUCB average reward', np.mean(results_KernelUCB))
-    
+
     # # Plot the average-reward graph over time
     plot_EpsGreedy  = []
     plot_UCB        = []

@@ -50,12 +50,10 @@ class LinUCB(MAB):
         self.narms          = narms
         self.ndims          = ndims
         self.alpha          = alpha
-        self.arm_at_t       = {}
         # A[arm] represents (X.X_transpose + lambda*I) from linear reg.
         self.A              = {}
         # B[arm] represents rewards vector (X_transponse.Y) from linear reg.
         self.B              = {}
-        self.num_times_arm  = {}
 
         for i in range(self.narms):
             # Initialize A as Identity Matrix
@@ -80,13 +78,6 @@ class LinUCB(MAB):
             the positive integer arm id for this round
         """
 
-        # Reset if the play call is for same round number as previous one
-        if tround in self.arm_at_t.keys():
-            tround_repeat = True
-            self.num_times_arm[self.arm_at_t[tround]]-=1
-        else:
-            tround_repeat = False
-
         ## Comment the below lines for parallel execution
         p   = [None]*self.narms #captures expected reward for each arm
         for i in range(self.narms):
@@ -101,13 +92,8 @@ class LinUCB(MAB):
         # p       = np.array(process_pool.starmap(util_calc_reward, data_p))
 
         # Random tie-break against all index corresponding to max value of Q
-        self.arm_at_t[tround] = argmax_rand(p)
 
-        # Store the selected arm
-        self.num_times_arm[self.arm_at_t[tround]] = \
-                self.num_times_arm.setdefault(self.arm_at_t[tround],0)+1
-
-        return self.arm_at_t[tround]+1
+        return argmax_rand(p)+1
 
     def update(self, arm, reward, context):
         """
