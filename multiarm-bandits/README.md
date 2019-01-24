@@ -1,4 +1,4 @@
-# Python implementation and analysis of multi-arm bandits(MAB) and contextual bandits algorithms #
+# Analysis of recommendation engine using multi-arm bandits(MAB) and contextual bandits algorithms #
 
 ![Graph-Plot of relative performance](https://github.com/anubhav-cs/Machine-Learning-and-AI/blob/master/multiarm-bandits/images/foo.png)
 
