@@ -1,0 +1,70 @@
+\documentclass[11pt]{article}
+
+\newcommand{\numpy}{{\tt numpy}}    % tt font for numpy
+
+\usepackage{amsmath}
+
+\topmargin -.5in
+\textheight 9in
+\oddsidemargin -.25in
+\evensidemargin -.25in
+\textwidth 7in
+
+\begin{document}
+
+% ========== Edit your name here
+\author{Anubhav Singh}
+\title{Proof of Standard Deviation formula, in Kernel-UCB algorithm,\\ using Woodbury Matrix Identity}
+\maketitle
+
+\medskip
+
+% ========== Begin answering questions here
+\begin{enumerate}
+
+\item [\textbf{Proof}]
+\item[]
+% ========== Just examples, please delete before submitting
+According to the Woodbury Matrix Identity:
+\begin{equation}
+    \mathbf{(A+BD^{-1}C)^{-1} = A^{-1} - A^{-1}B(D + CA^{-1}B)^{-1}CA^{-1}}
+\end{equation}
+
+Now, assign the following to matrices A, B, C and D
+\begin{equation}
+    \mathbf{A} = \mathbf{\gamma I_d}, \;
+    \mathbf{B} = \mathbf{\Phi^T_{dxt}}, \;
+    \mathbf{C} = \mathbf{\Phi_{t x d}}, \;
+    \mathbf{D} = \mathbf{I_t}
+\end{equation}
+
+Using equation (1),  
+\begin{align}
+\mathbf{(\gamma I_d+\Phi^T\Phi)^{-1}} &= \mathbf{(\gamma I_d+\Phi^TI_t^{-1}\Phi)^{-1}} \nonumber\\
+&= \mathbf{\gamma^{-1} I_d^{-1} - \gamma^{-1} I_d^{-1}\Phi^T(I_t + \Phi (\gamma^{-1} I_d^{-1})\Phi^T)^{-1}\Phi \gamma^{-1} I_d^{-1}} \nonumber \\
+&= \mathbf{\gamma^{-1} I_d - \gamma^{-1} I_d\Phi^T(I_t + \Phi (\gamma^{-1} I_d)\Phi^T)^{-1}\Phi \gamma^{-1} I_d} \nonumber \\
+&= \mathbf{\gamma^{-1} I_d - \gamma^{-2} \Phi^T \gamma(\gamma I_t + \Phi \Phi^T)^{-1}\Phi} \nonumber \\
+&= \mathbf{\gamma^{-1} (I_d - \Phi^T (\gamma I_t + \Phi \Phi^T)^{-1}\Phi)} \nonumber \\
+&= \mathbf{\gamma^{-1} (I_d - \Phi^T (\gamma I_t + K)^{-1}\Phi)} 
+\end{align}
+
+Applying the results obtained in (3) to the Standard Deviation Formula, we get the formula used in Algorithm-1
+
+\begin{align}
+\mathbf{\sigma_{n,t}} &=  \mathbf{[\phi^T_{x_{n,t}} (\gamma I + \Phi^T_{t-1}\Phi_{t-1})^{-1}_{t-1} \phi_{x_{n,t}} ]}^{1/2}  \nonumber \\
+&= \mathbf{[\gamma^{-1} \phi^T_{x_{n,t}} (I - \Phi^T_{t-1} (\gamma I + K_{t-1})^{-1}\Phi_{t-1}) \phi_{x_{n,t}}]}^{1/2}   \nonumber \\
+&= \mathbf{[\gamma^{-1}  \{(\phi^T_{x_{n,t}} \phi_{x_{n,t}})- (\phi^T_{x_{n,t}} \Phi^T_{t-1}) (\gamma I + K_{t-1})^{-1} (\Phi_{t-1}  \phi_{x_{n,t}})\} ]}^{1/2}   \nonumber \\
+&= \gamma^{-1/2} \mathbf{ [k(x_{n,t},x_{n,t}) - k^T_{x_{n,t},t-1} (\gamma I + K_{t-1})^{-1} k_{x_{n,t},t-1} ]}^{1/2}
+\end{align}
+
+
+
+
+
+% ========== END examples
+
+\end{enumerate}
+
+\end{document}
+\grid
+\grid

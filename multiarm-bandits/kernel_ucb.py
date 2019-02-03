@@ -96,21 +96,17 @@ class KernelUCB(MAB):
                 for j in range(1,tround):
                     k_arr.append(self.kern(x, self.context_at_t[j], self.k_gamma)[0][0])
 
-                k_i = np.transpose(np.matrix(k_arr))
+                k_i = np.matrix(k_arr)
 
-                sigma = np.sqrt( self.kern(x,x, self.k_gamma)[0][0] - \
+                # standard deviation of the gaussian distribution
+                sigma = np.sqrt(self.kern(x,x, self.k_gamma)[0][0] - \
                         np.linalg.det(np.matmul(np.matmul
-                        (np.transpose(k_i),self.K_inv),k_i)))
+                        (k_i,self.K_inv),np.transpose(k_i))))
 
-                self.u[i] =  np.linalg.det(np.matmul(np.matmul(np.transpose(k_i),\
+                # mean reward for arm i
+                self.u[i] =  np.linalg.det(np.matmul(np.matmul(k_i,\
                                 self.K_inv),self.y)) + \
                                 (self.eta*sigma)/np.sqrt(self.gamma)
-
-        max_u = max(self.u)
-        list_max = []
-        for i in range(len(self.u)):
-            if self.u[i] == max_u:
-                list_max.append(i+1)
 
         arm = argmax_rand(self.u)+1
         self.context_at_t[tround] = np.matrix(context[10*(arm-1):10*(arm-1)+10])
@@ -135,24 +131,32 @@ class KernelUCB(MAB):
         """
         a = np.matrix(context[10*(arm-1):10*(arm-1)+10])
         self.reward_at_t.append(reward)
+
+        # Create reward column vector 'y'
         self.y = np.transpose(np.matrix(self.reward_at_t))
         k_arr = []
 
+        # Calculation of Kernel Matrix Inverse
+        ## Kernel matrix increases in size by 1, at each time step
         if self.last_round == 1:
-            self.K_inv = inv(np.matrix([self.kern(a,a, self.k_gamma)[0][0]+self.gamma]))
+            self.K_inv = inv(
+                np.matrix([self.kern(a,a, self.k_gamma)[0][0]+self.gamma]))
         else:
             for i in range(1,self.last_round):
-                k_arr.append(self.kern(a, self.context_at_t[i], self.k_gamma)[0][0])
+                k_arr.append(
+                    self.kern(a, self.context_at_t[i], self.k_gamma)[0][0])
 
-            b = np.transpose(np.matrix(k_arr))
+            b = np.matrix(k_arr)
 
-            K_22 = inv(self.kern(a,a, self.k_gamma)[0][0] + self.gamma - \
-                                     np.matmul(np.matmul(np.transpose(b),self.K_inv),b))
-            K_11 = self.K_inv + np.linalg.det(K_22) * np.matmul(np.matmul(self.K_inv, b),\
-                                     np.matmul(np.transpose(b),self.K_inv))
-            K_12 = -np.linalg.det(K_22)*np.matmul(self.K_inv,b)
+            K_22 = inv(self.kern(a,a, self.k_gamma)[0][0] +\
+                                self.gamma - np.matmul(
+                                    np.matmul(b,self.K_inv),np.transpose(b)))
+            K_11 = self.K_inv + (np.linalg.det(K_22)*\
+                                np.matmul(np.matmul(self.K_inv,
+                                    np.transpose(b)), np.matmul(b,self.K_inv)))
+            K_12 = -np.linalg.det(K_22)*np.matmul(self.K_inv,np.transpose(b))
 
-            K_21 = -np.linalg.det(K_22)*np.matmul(np.transpose(b),self.K_inv)
+            K_21 = -np.linalg.det(K_22)*np.matmul(b,self.K_inv)
 
             m = np.concatenate((np.array(K_11), np.array(K_12)),axis=1)
             n = np.concatenate((np.array(K_21), np.array(K_22)),axis=1)
