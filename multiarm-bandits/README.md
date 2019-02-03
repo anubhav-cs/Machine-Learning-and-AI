@@ -7,7 +7,7 @@ The following algorithms were implemented:
 1. Epsilon Greedy
 2. Upper confidence bounds
 3. Linear UCB
-4. Kernel UCB **REPORT :** [link](https://github.com/anubhav-cs/Numerical-Methods/blob/master/Shallow%20Water%20Flow/Modelling%20the%20Shallow%20Water%20Flow.pdf)
+4. Kernel UCB **Algorithm :** [link](https://github.com/anubhav-cs/Machine-Learning-and-AI/blob/master/multiarm-bandits/kernelUCB_Theory.pdf)
 
 
 Furthermore, these algorithms were tested against the data-set, 10,000 lines (i.e., rows) corresponding to distinct site visits by users—events in the language of this part. Data-set was taken from university of melbourne's, statistical machine learning course.
