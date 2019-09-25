@@ -1,7 +1,6 @@
 # AI Contest: Pacman Capture the Flag #
 
-A contest/project *"Pacman Capture the Flag"*, based on *Berkeley Pacman Projects in AI* was launched at the University of Melbourne in October 2018. This implementation (or more specifically 'myAgentProgram.py'_File can be requested, not available publicily
-_) was ranked 10 among the 150+ entries.
+A contest/project *"Pacman Capture the Flag"*, based on *Berkeley Pacman Projects in AI* was launched at the University of Melbourne in October 2018. This implementation (or more specifically 'myAgentProgram.py' _File can be requested, not available publicily_ ) was ranked 10 among the 150+ entries.
 
 *The contest rules can be found here -* [link](http://ai.berkeley.edu/contest.html)
 
